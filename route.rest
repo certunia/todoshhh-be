@@ -1,0 +1,28 @@
+GET http://localhost:3000/todoshhh
+
+###
+
+GET http://localhost:3000/todoshhh/6266c0b19f2b8ac4ef49f974
+
+###
+
+POST http://localhost:3000/todoshhh
+Content-Type: application/json
+
+{
+  "text": "Second one"
+}
+
+###
+
+DELETE http://localhost:3000/todoshhh/6266c0ee9f2b8ac4ef49f976
+
+###
+
+PATCH http://localhost:3000/todoshhh/6266d2ce9d91e8b7ee4cea27
+Content-Type: application/json
+
+{
+  "text": "Third one",
+  "isDone": true
+}
