@@ -5,7 +5,7 @@ const app = express()
 const mongoose = require('mongoose')
 const passport = require('passport')
 const session = require('express-session')
-const MongoStore = require('connect-mongo')(session)
+const MongoStore = require('connect-mongo')
 
 mongoose.connect(process.env.MONGODB_URL, { useNewUrlParser: true })
 const db = mongoose.connection
@@ -21,7 +21,7 @@ app.use(session({
   resave: false,
   saveUninitialized: true,
   // cookie: { secure: true },
-  store: new MongoStore({ mongooseConnection: mongoose.connection })
+  store: MongoStore.create({ mongoUrl: process.env.MONGODB_URL })
 }))
 
 // Passport middleware
