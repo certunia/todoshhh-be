@@ -15,6 +15,11 @@ db.once('open', () =>  console.error('Connected to Database'))
 // Passport config
 require('./config/passport')(passport)
 
+// disable CORS
+const cors = require('cors');
+app.use(cors());
+app.options('*', cors());
+
 // Session middleware *above passport*
 app.use(session({
   secret: 'keyboard cat',
