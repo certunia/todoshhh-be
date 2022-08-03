@@ -35,8 +35,8 @@ app.use(passport.session())
 
 app.use(express.json())
 
-app.use('/todoshhh', require('./routes/todoshhh'))
-app.use('/auth', require('./routes/auth'))
+// app.use('/todoshhh', require('./routes/todoshhh'))
+// app.use('/auth', require('./routes/auth'))
 
 app.get("/hello", async (req, res) => {
   res.json({ Hello: "World" });
