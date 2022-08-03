@@ -2,10 +2,10 @@ require('dotenv').config()
 
 const express = require('express')
 const app = express()
-const mongoose = require('mongoose')
+// const mongoose = require('mongoose')
 const passport = require('passport')
-const session = require('express-session')
-const MongoStore = require('connect-mongo')
+// const session = require('express-session')
+// const MongoStore = require('connect-mongo')
 
 // mongoose.connect(process.env.MONGODB_URL, { useNewUrlParser: true })
 // const db = mongoose.connection
@@ -21,13 +21,13 @@ app.use(cors());
 app.options('*', cors());
 
 // Session middleware *above passport*
-app.use(session({
-  secret: 'keyboard cat',
-  resave: false,
-  saveUninitialized: true,
-  // cookie: { secure: true },
-  store: MongoStore.create({ mongoUrl: process.env.MONGODB_URL })
-}))
+// app.use(session({
+//   secret: 'keyboard cat',
+//   resave: false,
+//   saveUninitialized: true,
+//   // cookie: { secure: true },
+//   store: MongoStore.create({ mongoUrl: process.env.MONGODB_URL })
+// }))
 
 // Passport middleware
 app.use(passport.initialize())
