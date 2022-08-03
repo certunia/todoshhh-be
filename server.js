@@ -3,7 +3,7 @@ require('dotenv').config()
 const express = require('express')
 const app = express()
 // const mongoose = require('mongoose')
-const passport = require('passport')
+// const passport = require('passport')
 // const session = require('express-session')
 // const MongoStore = require('connect-mongo')
 
@@ -13,7 +13,7 @@ const passport = require('passport')
 // db.once('open', () =>  console.error('Connected to Database'))
 
 // Passport config
-require('./config/passport')(passport)
+// require('./config/passport')(passport)
 
 // disable CORS
 const cors = require('cors');
@@ -30,8 +30,8 @@ app.options('*', cors());
 // }))
 
 // Passport middleware
-app.use(passport.initialize())
-app.use(passport.session())
+// app.use(passport.initialize())
+// app.use(passport.session())
 
 app.use(express.json())
 
