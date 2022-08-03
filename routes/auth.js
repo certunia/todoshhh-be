@@ -20,6 +20,12 @@ router.get(
 
 // @desc    Google auth callback
 // @route   GET /auth/google/callback
+router.get("/hello", async (req, res) => {
+  res.json({ Hello: "World" });
+});
+
+// @desc    Google auth callback
+// @route   GET /auth/google/callback
 router.get('/me', ensureAuth,  (req, res) => {
     res.redirect('/auth/')
   }
