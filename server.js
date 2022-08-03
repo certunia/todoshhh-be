@@ -7,10 +7,10 @@ const passport = require('passport')
 const session = require('express-session')
 const MongoStore = require('connect-mongo')
 
-mongoose.connect(process.env.MONGODB_URL, { useNewUrlParser: true })
-const db = mongoose.connection
-db.on('error', (error) => console.error(error))
-db.once('open', () =>  console.error('Connected to Database'))
+// mongoose.connect(process.env.MONGODB_URL, { useNewUrlParser: true })
+// const db = mongoose.connection
+// db.on('error', (error) => console.error(error))
+// db.once('open', () =>  console.error('Connected to Database'))
 
 // Passport config
 require('./config/passport')(passport)
