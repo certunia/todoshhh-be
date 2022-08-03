@@ -38,4 +38,8 @@ app.use(express.json())
 app.use('/todoshhh', require('./routes/todoshhh'))
 app.use('/auth', require('./routes/auth'))
 
+app.get("/hello", async (req, res) => {
+  res.json({ Hello: "World" });
+});
+
 app.listen(process.env.PORT, () => console.log('Server Started'))
