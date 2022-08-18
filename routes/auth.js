@@ -14,20 +14,14 @@ router.get(
   '/google/callback',
   passport.authenticate('google', { failureRedirect: '/' }),
   (req, res) => {
-    res.redirect('/auth/')
+    res.redirect(301, process.env.FRONTEND_URL)
   }
 )
 
 // @desc    Google auth callback
 // @route   GET /auth/google/callback
-router.get("/hello", async (req, res) => {
-  res.json({ Hello: "World" });
-});
-
-// @desc    Google auth callback
-// @route   GET /auth/google/callback
 router.get('/me', ensureAuth,  (req, res) => {
-    res.redirect('/auth/')
+    res.json(req.user);
   }
 )
 
