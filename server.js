@@ -21,26 +21,30 @@ require('./config/passport')(passport)
 
 // disable CORS
 const cors = require('cors');
-var corsOptions = {
-  origin: process.env.FRONTEND_URL,
-}
-app.use(cors(corsOptions));
-// app.options('*', cors());
+
+app.use(cors({
+  origin: process.env.FRONTEND_URL, // update to match the domain you will make the request from
+  methods: ['GET','POST','DELETE','UPDATE','PUT','PATCH', 'OPTIONS'],
+  credentials: true,
+  maxAge: 1000 * 60 * 60 * 24 * 7 * 365 // 7 years
+}));
 
 // Session middleware *above passport*
 app.use(session({
-  secret: 'keyboard cat',
+  secret: 'siljbpwbpwb',
   resave: false,
-  saveUninitialized: true,
-  // cookie: { secure: true },
+  saveUninitialized: false,
+  cookie: {
+    secure: true,
+    httpOnly: true,
+    maxAge: 1000 * 60 * 60 * 24 * 7 * 365 // 7 years
+  },
   store: MongoStore.create({ mongoUrl: process.env.MONGODB_URL })
 }))
 
 app.use(function(req, res, next) {
-  res.header('Access-Control-Allow-Credentials', true);
-//   res.header('Access-Control-Allow-Origin', req.headers.origin);
-//   res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
-//   res.header('Access-Control-Allow-Headers', 'X-Requested-With, X-HTTP-Method-Override, Content-Type, Accept');
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  res.header("Access-Control-Allow-Credentials", true);
   next();
 });
 
