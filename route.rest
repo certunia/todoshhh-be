@@ -6,12 +6,17 @@ GET http://localhost:3000/todoshhh/6266c0b19f2b8ac4ef49f974
 
 ###
 
-POST http://localhost:3000/todoshhh
+POST http://localhost:3000/todoshhh/add-list
+
+###
+
+POST http://localhost:3000/todoshhh/0
 Content-Type: application/json
 
 {
   "text": "First one"
 }
+
 
 ###
 
@@ -19,7 +24,7 @@ DELETE http://localhost:3000/todoshhh/6266c0ee9f2b8ac4ef49f976
 
 ###
 
-PATCH http://localhost:3000/todoshhh/6266d2ce9d91e8b7ee4cea27
+PATCH http://localhost:3000/todoshhh/1/1
 Content-Type: application/json
 
 {

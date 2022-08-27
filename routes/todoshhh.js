@@ -1,49 +1,85 @@
 const express = require('express')
 const router = express.Router()
 const TodoItem = require('../models/todo_item')
+const User = require('../models/user')
+const { ensureAuth } = require('../middleware/auth')
 
 // get all
-router.get('/', async(req, res) => {
+router.get('/', ensureAuth, async(req, res) => {
   try {
-    const todoItems = await TodoItem.find();
-    res.json(todoItems);
+    res.json(req.user.todoLists);
   } catch (error) {
-    res.status(500).json({ message: err.message })
+    res.status(500).json({ message: error.message })
   }
 })
 
-// get one
-router.get('/:id', getTodoItem,  (req, res) => {
-  res.json(res.todoItem)
+// creating todoList
+router.post('/add-list', ensureAuth, async(req, res) => {
+  try {
+    req.user.todoLists.push([]);
+    const updatedTodoList = await req.user.save();
+    res.json(updatedTodoList.todoLists);
+  } catch (err) {
+    res.status(400).json({ message: err.message })
+  }
 })
 
-// creating one
-router.post('/', async(req, res) => {
-  const todoItem = new TodoItem ({
-    text: req.body.text
-  })
+// creating todoItem
+router.post('/:listId/add-item', ensureAuth, async(req, res) => {
   try {
-    const newTodoItems = await todoItem.save();
-    res.json(newTodoItems);
+    const text = req.body.text;
+    if (!text) {
+      return res.status(404).json({ message: 'Text field is required' })
+    }
+
+    const listId = req.params.listId;
+
+    req.user.todoLists[listId].push({
+      text,
+      isDone: false
+    });
+
+    req.user.markModified("todoLists");
+
+    const updatedTodoList = await req.user.save();
+    res.json(updatedTodoList.todoLists);
   } catch (err) {
     res.status(400).json({ message: err.message })
   }
 })
 
 // update one
-router.patch('/:id', getTodoItem, async(req, res) => {
+router.patch('/:list/:id', ensureAuth, async(req, res) => {
+  const todoItem = req.user.todoLists[req.params.list][req.params.id];
+
+  if (todoItem === undefined) {
+    return res.status(404).json({ message: 'The todo item is not found' })
+  }
+
   if (req.body.text !== null) {
-    res.todoItem.text = req.body.text;
+    todoItem.text = req.body.text;
   }
   if (req.body.isDone !== null) {
-    res.todoItem.isDone = req.body.isDone;
+    todoItem.isDone = req.body.isDone;
   }
-  try {
-    const updatedTodoItem = await res.todoItem.save();
-    res.json(updatedTodoItem);
-  } catch (err) {
-    res.status(400).json({ message: err.message })
-  }
+
+  // сохранить в БД
+
+  // if (req.body.text !== null) {
+  //   res.todoItem.text = req.body.text;
+  // }
+  // if (req.body.isDone !== null) {
+  //   res.todoItem.isDone = req.body.isDone;
+  // }
+  // try {
+  //   const updatedTodoItem = await res.todoItem.save();
+  //   res.json(updatedTodoItem);
+  // } catch (err) {
+  //   res.status(400).json({ message: err.message })
+  // }
+  const ress = res;
+  const reqq = req;
+  res.json({ hi: 'mom' });
 })
 
 // delete one
@@ -59,16 +95,17 @@ router.delete('/:id', getTodoItem, async(req, res) => {
 // get item by id Middleware
 async function getTodoItem(req, res, next) {
   let todoItem
-  try {
-    todoItem = await TodoItem.findById(req.params.id)
-    if (todoItem === null) {
-      return res.status(404).json({ message: `Can not find todo item id: ${req.params.id}` })
-    }
-  } catch (err) {
-    res.status(500).json({ message: err.message })
-  }
+  // try {
+  //   todoItem = await TodoItem.findById(req.params.id)
+  //   if (todoItem === null) {
+  //     return res.status(404).json({ message: `Can not find todo item id: ${req.params.id}` })
+  //   }
+  // } catch (err) {
+  //   res.status(500).json({ message: err.message })
+  // }
+  //
+  // res.todoItem = todoItem;
 
-  res.todoItem = todoItem;
   next()
 }
 
