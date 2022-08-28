@@ -25,16 +25,16 @@ router.post('/add-list', ensureAuth, async(req, res) => {
 })
 
 // creating todoItem
-router.post('/:listId/add-item', ensureAuth, async(req, res) => {
+router.post('/:listIndex/add-item', ensureAuth, async(req, res) => {
   try {
     const text = req.body.text;
     if (!text) {
       return res.status(404).json({ message: 'Text field is required' })
     }
 
-    const listId = req.params.listId;
+    const listIndex = req.params.listIndex;
 
-    req.user.todoLists[listId].push({
+    req.user.todoLists[listIndex].push({
       text,
       isDone: false
     });
@@ -83,12 +83,20 @@ router.patch('/:list/:id', ensureAuth, async(req, res) => {
 })
 
 // delete one
-router.delete('/:id', getTodoItem, async(req, res) => {
+router.delete('/:listIndex/delete-item/:itemIndex', ensureAuth, async(req, res) => {
   try {
-    await res.todoItem.remove()
-    res.json({ message: 'Successfully deleted' })
+    const listIndex = req.params.listIndex;
+    const itemIndex = req.params.itemIndex;
+
+    const arr = req.user.todoLists[listIndex];
+    req.user.todoLists[listIndex] = arr.splice(req.params.itemIndex, 1);
+
+    req.user.markModified("todoLists");
+
+    const updatedTodoList = await req.user.save();
+    res.json(updatedTodoList.todoLists);
   } catch (err) {
-    res.status(500).json({ message: err.message })
+    res.status(400).json({ message: err.message })
   }
 })
 
