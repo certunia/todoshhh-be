@@ -49,37 +49,27 @@ router.post('/:listIndex/add-item', ensureAuth, async(req, res) => {
 })
 
 // update one
-router.patch('/:list/:id', ensureAuth, async(req, res) => {
-  const todoItem = req.user.todoLists[req.params.list][req.params.id];
+router.patch('/:listIndex/:itemIndex', ensureAuth, async(req, res) => {
+  try {
+    const listIndex = req.params.listIndex;
+    const itemIndex = req.params.itemIndex;
+    const text = req.body.text;
+    const isDone = req.body.isDone;
 
-  if (todoItem === undefined) {
-    return res.status(404).json({ message: 'The todo item is not found' })
+    if (text?.length) {
+      req.user.todoLists[listIndex][itemIndex].text = text;
+    }
+    if (typeof isDone === "boolean") {
+      req.user.todoLists[listIndex][itemIndex].isDone = isDone;
+    }
+
+    req.user.markModified("todoLists");
+
+    const updatedTodoList = await req.user.save();
+    res.json(updatedTodoList.todoLists);
+  } catch (err) {
+    res.status(400).json({ message: err.message })
   }
-
-  if (req.body.text !== null) {
-    todoItem.text = req.body.text;
-  }
-  if (req.body.isDone !== null) {
-    todoItem.isDone = req.body.isDone;
-  }
-
-  // сохранить в БД
-
-  // if (req.body.text !== null) {
-  //   res.todoItem.text = req.body.text;
-  // }
-  // if (req.body.isDone !== null) {
-  //   res.todoItem.isDone = req.body.isDone;
-  // }
-  // try {
-  //   const updatedTodoItem = await res.todoItem.save();
-  //   res.json(updatedTodoItem);
-  // } catch (err) {
-  //   res.status(400).json({ message: err.message })
-  // }
-  const ress = res;
-  const reqq = req;
-  res.json({ hi: 'mom' });
 })
 
 // delete one
