@@ -88,8 +88,7 @@ router.delete('/:listIndex/delete-item/:itemIndex', ensureAuth, async(req, res) 
     const listIndex = req.params.listIndex;
     const itemIndex = req.params.itemIndex;
 
-    const arr = req.user.todoLists[listIndex];
-    req.user.todoLists[listIndex] = arr.splice(req.params.itemIndex, 1);
+    req.user.todoLists[listIndex].splice(itemIndex, 1);
 
     req.user.markModified("todoLists");
 
