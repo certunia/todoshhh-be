@@ -4,7 +4,7 @@ const TodoItem = require('../models/todo_item')
 const User = require('../models/user')
 const { ensureAuth } = require('../middleware/auth')
 
-// get all
+// get all lists
 router.get('/', ensureAuth, async(req, res) => {
   try {
     res.json(req.user.todoLists);
@@ -23,6 +23,9 @@ router.post('/add-list', ensureAuth, async(req, res) => {
     res.status(400).json({ message: err.message })
   }
 })
+
+// delete todoList
+// ...
 
 // creating todoItem
 router.post('/:listIndex/add-item', ensureAuth, async(req, res) => {
@@ -48,7 +51,7 @@ router.post('/:listIndex/add-item', ensureAuth, async(req, res) => {
   }
 })
 
-// update one
+// update todoItem
 router.patch('/:listIndex/:itemIndex', ensureAuth, async(req, res) => {
   try {
     const listIndex = req.params.listIndex;
@@ -72,7 +75,37 @@ router.patch('/:listIndex/:itemIndex', ensureAuth, async(req, res) => {
   }
 })
 
-// delete one
+// change places todoItems
+router.patch('/swap-items', ensureAuth, async(req, res) => {
+  try {
+    const listIndex1 = req.body.listIndex1;
+    const itemIndex1 = req.body.itemIndex1;
+    const listIndex2 = req.body.listIndex2;
+    const itemIndex2 = req.body.itemIndex2;
+
+    console.log(listIndex1)
+    console.log(itemIndex1)
+    console.log(listIndex2)
+    console.log(itemIndex2)
+
+    if (listIndex1 === listIndex2) {
+      let temp = req.user.todoLists[listIndex1][itemIndex1];
+      req.user.todoLists[listIndex1][itemIndex1] = req.user.todoLists[listIndex1][itemIndex2];
+      req.user.todoLists[listIndex1][itemIndex2] = temp;
+    }
+
+    console.log(req.user.todoLists[listIndex1]);
+
+    req.user.markModified("todoLists");
+
+    const updatedTodoList = await req.user.save();
+    res.json(updatedTodoList.todoLists);
+  } catch (err) {
+    res.status(400).json({ message: err.message })
+  }
+})
+
+// delete todoItem
 router.delete('/:listIndex/delete-item/:itemIndex', ensureAuth, async(req, res) => {
   try {
     const listIndex = req.params.listIndex;
@@ -88,22 +121,5 @@ router.delete('/:listIndex/delete-item/:itemIndex', ensureAuth, async(req, res) 
     res.status(400).json({ message: err.message })
   }
 })
-
-// get item by id Middleware
-async function getTodoItem(req, res, next) {
-  let todoItem
-  // try {
-  //   todoItem = await TodoItem.findById(req.params.id)
-  //   if (todoItem === null) {
-  //     return res.status(404).json({ message: `Can not find todo item id: ${req.params.id}` })
-  //   }
-  // } catch (err) {
-  //   res.status(500).json({ message: err.message })
-  // }
-  //
-  // res.todoItem = todoItem;
-
-  next()
-}
 
 module.exports = router
